@@ -18,9 +18,16 @@ void MtlEngine::init() {
     createDefaultLibrary();
     createCommandQueue();
     createBlinnPhongRenderPipeline();
+    createBPNoShadowRenderPipeline();
     createLightSourceRenderPipeline();
     createDepthAndMSAATextures();
     createRenderPassDescriptor();
+    
+    createShadowCommandQueue();
+    createShadowMapTexture();
+    createShadowMapSampler();
+    createShadowPassDescriptor();
+    createShadowPipeline();
     // ImGui initialization
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -65,7 +72,9 @@ void MtlEngine::cleanup() {
     // Clean up Metal resources
     transformationBuffer->release();
     lightTransformationBuffer->release();
+    shadowTransformBuffer->release();
     msaaRenderTargetTexture->release();
+    shadowMapTexture->release();
     depthTexture->release();
     renderPassDescriptor->release();
     metalDevice->release();
@@ -77,12 +86,36 @@ void MtlEngine::cleanup() {
 void MtlEngine::createBuffers() {
     transformationBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     lightTransformationBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
+    shadowTransformBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     planeTransformBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     lightingBuffer = metalDevice->newBuffer(sizeof(LightingData), MTL::ResourceStorageModeShared);
 }
 
 void MtlEngine::draw() {
+    renderShadowPass();
     sendRenderCommand();
+}
+
+void MtlEngine::renderShadowPass() {
+    shadowCommandBuffer = shadowCommandQueue->commandBuffer();
+    
+    MTL::RenderCommandEncoder* shadowEncoder = shadowCommandBuffer->renderCommandEncoder(shadowPassDescriptor);
+    
+    shadowEncoder->setRenderPipelineState(shadowRenderPSO);
+    shadowEncoder->setDepthStencilState(depthStencilState);
+    
+    shadowEncoder->setVertexBuffer(cubeVertexBuffer, 0, 0);
+//    shadowEncoder->setVertexBuffer(planeVertexBuffer, 0, 0);
+    shadowEncoder->setVertexBuffer(shadowTransformBuffer, 0, 1); // Use light's transform
+    
+    NS::UInteger vertexStart = 0;
+    NS::UInteger vertexCount = 36;
+    
+    shadowEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
+
+    shadowEncoder->endEncoding();
+    shadowCommandBuffer->commit();
+    shadowCommandBuffer->waitUntilCompleted();
 }
 
 void MtlEngine::sendRenderCommand() {
@@ -102,11 +135,15 @@ void MtlEngine::sendRenderCommand() {
 }
 
 void MtlEngine::updateSharedTransformData() {
-    matrix_float4x4 modelMatrix = matrix4x4_translation(0,0,-1.0);
+    float near_plane = 0.1f, far_plane = 15.0f;
+    matrix_float4x4 lightProj = matrix_ortho_right_hand(-8.0f, 8.0f, -8.0f, 8.0f, near_plane, far_plane);
     
-    float time = glfwGetTime();
-    matrix_float4x4 rotation = matrix4x4_rotation(time, 0.0f, 1.0f, 0.0f);
-    matrix_float4x4 lightModelMatrix = matrix_multiply(rotation, matrix4x4_translation(1.2, 1.0, 2.0));
+    // Use ImGui controlled cube position
+    matrix_float4x4 modelMatrix = matrix4x4_translation(cubePosition.x, cubePosition.y, cubePosition.z);
+    
+    
+    // Use ImGui controlled light position
+    matrix_float4x4 lightModelMatrix = matrix4x4_translation(lightPosition.x, lightPosition.y, lightPosition.z);
     matrix_float4x4 viewMatrix = camera->getViewMatrix();
     matrix_float4x4 planeModelMatrix = matrix4x4_translation(0, -1.0f, 0); // Slightly below origin
     planeModelMatrix = matrix_multiply(planeModelMatrix, matrix4x4_scale(10.0f, 1.0f, 10.0f)); // Big floor
@@ -119,8 +156,43 @@ void MtlEngine::updateSharedTransformData() {
     TransformationData tMain = {modelMatrix, viewMatrix, projectionMatrix};
     memcpy(transformationBuffer->contents(), &tMain, sizeof(tMain));
 
-    TransformationData tLight = {lightModelMatrix, viewMatrix, projectionMatrix};
-    memcpy(lightTransformationBuffer->contents(), &tLight, sizeof(tLight));
+    // Extract light position from model matrix
+    simd::float3 lightPos = lightPosition;
+
+    // The light should look at where your main cube is
+    simd::float3 mainCubePos = cubePosition;
+    simd::float3 forward = simd_normalize(mainCubePos - lightPos);
+    
+    // Choose a consistent up vector based on which axis has the least influence
+    simd::float3 absForward = {abs(forward.x), abs(forward.y), abs(forward.z)};
+    simd::float3 worldUp;
+    
+    if (absForward.y < absForward.x && absForward.y < absForward.z) {
+        worldUp = {0.0, 1.0, 0.0}; // Y is smallest, use Y up
+    } else if (absForward.x < absForward.z) {
+        worldUp = {1.0, 0.0, 0.0}; // X is smallest, use X up
+    } else {
+        worldUp = {0.0, 0.0, 1.0}; // Z is smallest, use Z up
+    }
+    
+    simd::float3 right = simd_normalize(simd_cross(forward, worldUp));
+    simd::float3 up = simd_cross(right, forward);
+
+    matrix_float4x4 lightView = matrix_look_at_right_hand(lightPos, mainCubePos, up);
+    
+    TransformationData tLight = {
+        lightModelMatrix,  // model (you can use identity or place light model here)
+        lightView,
+        lightProj
+    };
+    memcpy(shadowTransformBuffer->contents(), &tLight, sizeof(tLight));
+    
+    TransformationData lightCubeT = {
+        lightModelMatrix,
+        viewMatrix,                // from camera
+        projectionMatrix           // from camera
+    };
+    memcpy(lightTransformationBuffer->contents(), &lightCubeT, sizeof(lightCubeT));
     
     TransformationData planeTransform = {
         planeModelMatrix,
@@ -131,7 +203,7 @@ void MtlEngine::updateSharedTransformData() {
 
     LightingData lightingData;
     lightingData.cameraPos = camera->getPosition();
-    lightingData.lightPos = simd::float3 {lightModelMatrix.columns[3].x, lightModelMatrix.columns[3].y, lightModelMatrix.columns[3].z};
+    lightingData.lightPos = lightPosition;
     lightingData.lightColor = simd::float3 {1.0f, 1.0f, 1.0f};
     lightingData.lightIntensity = 0.7f;
     lightingData.ambientIntensity = 0.1f;
@@ -143,7 +215,9 @@ void MtlEngine::encodeMainCube(MTL::RenderCommandEncoder *renderCommandEncoder) 
     simd::float3 cubeColor = {1.0f, 0.5f, 0.31f};
     NS::UInteger vertexStart = 0;
     NS::UInteger vertexCount = 36;
-    renderCommandEncoder->setRenderPipelineState(blinnPhongRenderPSO);
+    
+    // Use the NO-SHADOW pipeline for the cube
+    renderCommandEncoder->setRenderPipelineState(blinnPhongNoShadowRenderPSO);
     renderCommandEncoder->setDepthStencilState(depthStencilState);
     renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
     renderCommandEncoder->setCullMode(MTL::CullModeBack);
@@ -151,6 +225,7 @@ void MtlEngine::encodeMainCube(MTL::RenderCommandEncoder *renderCommandEncoder) 
     renderCommandEncoder->setVertexBuffer(cubeVertexBuffer, 0, 0);
     renderCommandEncoder->setVertexBuffer(transformationBuffer, 0, 1);
     renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 2);
+    // No need to set shadow texture/sampler for no-shadow pipeline
     renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
     renderCommandEncoder->setFragmentBytes(&cubeColor, sizeof(cubeColor), 0);
     renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
@@ -172,33 +247,32 @@ void MtlEngine::encodeLightCube(MTL::RenderCommandEncoder* renderCommandEncoder)
 void MtlEngine::encodePlane(MTL::RenderCommandEncoder *renderCommandEncoder) {
     NS::UInteger vertexStart = 0;
     NS::UInteger vertexCount = 6;
-    renderCommandEncoder->setRenderPipelineState(blinnPhongRenderPSO);
+    
+    // Use the WITH-SHADOW pipeline for the plane
+    renderCommandEncoder->setRenderPipelineState(blinnPhongRenderPSO); // This should use fragmentBP_WithShadow
     renderCommandEncoder->setDepthStencilState(depthStencilState);
     renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
     renderCommandEncoder->setCullMode(MTL::CullModeBack);
 
     renderCommandEncoder->setVertexBuffer(planeVertexBuffer, 0, 0);
     renderCommandEncoder->setVertexBuffer(planeTransformBuffer, 0, 1);
-    renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 2);
+    renderCommandEncoder->setVertexBuffer(shadowTransformBuffer, 0, 2);
+    renderCommandEncoder->setFragmentTexture(shadowMapTexture, 0);
+    renderCommandEncoder->setFragmentSamplerState(shadowSampler, 0);
     renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
 
     simd::float3 color = {0.5f, 0.7f, 0.5f};
     renderCommandEncoder->setFragmentBytes(&color, sizeof(color), 0);
 
     renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
-    
 }
 
 void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
     // Build ImGui UI
     simd::float3 lightColor = {1.0f, 1.0f, 1.0f};
-    ImGui::Begin("Engine Controls");
-    static float pos[3] = {0.0f, 0.0f, 0.0f};
-    static float rot[3] = {0.0f, 0.0f, 0.0f};
-    static float scale[3] = {1.0f, 1.0f, 1.0f};
-    ImGui::SliderFloat3("Object Position", pos, -10.0f, 10.0f);
-    ImGui::SliderFloat3("Object Rotation", rot, 0.0f, 360.0f);
-    ImGui::SliderFloat3("Object Scale", scale, 0.1f, 5.0f);
+    ImGui::Begin("Scene Controls");
+    ImGui::SliderFloat3("Light Position", (float*)&lightPosition, -5.0f, 5.0f);
+    ImGui::SliderFloat3("Cube Position", (float*)&cubePosition, -5.0f, 5.0f);
     ImGui::ColorEdit3("Light Color", reinterpret_cast<float*>(&lightColor));
     ImGui::End();
     
@@ -225,6 +299,10 @@ void MtlEngine::encodeRenderCommand(MTL::RenderCommandEncoder* renderCommandEnco
  */
 void MtlEngine::createCommandQueue() {
     metalCommandQueue = metalDevice->newCommandQueue();
+}
+
+void MtlEngine::createShadowCommandQueue() {
+    shadowCommandQueue = metalDevice->newCommandQueue();
 }
 
 /**
@@ -289,7 +367,40 @@ void MtlEngine::createBlinnPhongRenderPipeline() {
     NS::Error* error;
     blinnPhongRenderPSO = metalDevice->newRenderPipelineState(renderPipelineDescriptor, &error);
 
-    if (metalRenderPSO == nil) {
+    if (blinnPhongRenderPSO == nil) {
+        std::cout << "Error creating render pipeline state: " << error << std::endl;
+        std::exit(0);
+    }
+
+    MTL::DepthStencilDescriptor* depthStencilDescriptor = MTL::DepthStencilDescriptor::alloc()->init();
+    depthStencilDescriptor->setDepthCompareFunction(MTL::CompareFunctionLessEqual);
+    depthStencilDescriptor->setDepthWriteEnabled(true);
+    depthStencilState = metalDevice->newDepthStencilState(depthStencilDescriptor);
+
+    renderPipelineDescriptor->release();
+    vertexShader->release();
+    fragmentShader->release();
+}
+
+void MtlEngine::createBPNoShadowRenderPipeline() {
+    MTL::Function* vertexShader = metalDefaultLibrary->newFunction(NS::String::string("vertexBP", NS::ASCIIStringEncoding));
+    assert(vertexShader);
+    MTL::Function* fragmentShader = metalDefaultLibrary->newFunction(NS::String::string("fragmentBP_NoShadow", NS::ASCIIStringEncoding));
+    assert(fragmentShader);
+    
+    MTL::RenderPipelineDescriptor* renderPipelineDescriptor = MTL::RenderPipelineDescriptor::alloc()->init();
+    renderPipelineDescriptor->setVertexFunction(vertexShader);
+    renderPipelineDescriptor->setFragmentFunction(fragmentShader);
+    assert(renderPipelineDescriptor);
+    MTL::PixelFormat pixelFormat = (MTL::PixelFormat)metalLayer.pixelFormat;
+    renderPipelineDescriptor->colorAttachments()->object(0)->setPixelFormat(pixelFormat);
+    renderPipelineDescriptor->setSampleCount(sampleCount);
+    renderPipelineDescriptor->setDepthAttachmentPixelFormat(MTL::PixelFormatDepth32Float);
+
+    NS::Error* error;
+    blinnPhongNoShadowRenderPSO = metalDevice->newRenderPipelineState(renderPipelineDescriptor, &error);
+
+    if (blinnPhongNoShadowRenderPSO == nil) {
         std::cout << "Error creating render pipeline state: " << error << std::endl;
         std::exit(0);
     }
@@ -327,6 +438,22 @@ void MtlEngine::createLightSourceRenderPipeline() {
     renderPipelineDescriptor->release();
 }
 
+void MtlEngine::createShadowPipeline() {
+    MTL::Function* vertexShader = metalDefaultLibrary->newFunction(NS::String::string("shadowVertex", NS::ASCIIStringEncoding));
+    assert(vertexShader);
+    
+    MTL::RenderPipelineDescriptor* desc = MTL::RenderPipelineDescriptor::alloc()->init();
+    desc->setVertexFunction(vertexShader);
+    desc->setDepthAttachmentPixelFormat(MTL::PixelFormatDepth32Float);
+    desc->colorAttachments()->object(0)->setPixelFormat(MTL::PixelFormatInvalid); // No color
+    desc->setLabel(NS::String::string("Shadow Render Pipeline", NS::ASCIIStringEncoding));
+    
+    NS::Error* error;
+    shadowRenderPSO = metalDevice->newRenderPipelineState(desc, &error);
+    desc->release();
+    vertexShader->release();
+}
+
 void MtlEngine::createDepthAndMSAATextures() {
     MTL::TextureDescriptor* msaaTextureDescriptor = MTL::TextureDescriptor::alloc()->init();
     msaaTextureDescriptor->setTextureType(MTL::TextureType2DMultisample);
@@ -350,6 +477,31 @@ void MtlEngine::createDepthAndMSAATextures() {
 
     msaaTextureDescriptor->release();
     depthTextureDescriptor->release();
+}
+
+void MtlEngine::createShadowMapSampler(){
+    MTL::SamplerDescriptor* desc = MTL::SamplerDescriptor::alloc()->init();
+    
+    desc->setMinFilter(MTL::SamplerMinMagFilterLinear);
+    desc->setMagFilter(MTL::SamplerMinMagFilterLinear);
+    desc->setSAddressMode(MTL::SamplerAddressModeRepeat);
+    desc->setTAddressMode(MTL::SamplerAddressModeRepeat);
+    
+    shadowSampler = metalDevice->newSamplerState(desc);
+    desc->release();
+}
+
+void MtlEngine::createShadowMapTexture(){
+    MTL::TextureDescriptor* shadowDesc = MTL::TextureDescriptor::alloc()->init();
+    shadowDesc->setTextureType(MTL::TextureType2D);
+    shadowDesc->setPixelFormat(MTL::PixelFormatDepth32Float);
+    shadowDesc->setWidth(1024);  // Shadow map resolution
+    shadowDesc->setHeight(1024);
+    shadowDesc->setStorageMode(MTL::StorageModePrivate);
+    shadowDesc->setUsage(MTL::TextureUsageRenderTarget | MTL::TextureUsageShaderRead);
+    
+    shadowMapTexture = metalDevice->newTexture(shadowDesc);
+    shadowDesc->release();
 }
 
 void MtlEngine::createCube() {
@@ -411,12 +563,12 @@ void MtlEngine::createCube() {
 
 void MtlEngine::createPlane() {
     VertexData planeVertices[] = {
-        {{-0.5, 0.0, 0.5, 1.0}, {0.0, 0.0}, {0.0,1.0,0.0}},
-        {{0.5, 0.0, 0.5, 1.0}, {1.0, 0.0}, {0.0,1.0,0.0}},
-        {{0.5, 0.0, -0.5, 1.0}, {1.0, 1.0}, {0.0,1.0,0.0}},
-        {{0.5, 0.0, -0.5, 1.0}, {1.0, 1.0}, {0.0,1.0,0.0}},
-        {{-0.5, 0.0, -0.5, 1.0}, {0.0, 1.0}, {0.0,1.0,0.0}},
-        {{-0.5, 0.0, 0.5, 1.0}, {0.0, 0.0}, {0.0,1.0,0.0}},
+        {{-1.5, 0.0, 1.5, 1.0}, {0.0, 0.0}, {0.0,1.0,0.0}},
+        {{1.5, 0.0, 1.5, 1.0}, {1.0, 0.0}, {0.0,1.0,0.0}},
+        {{1.5, 0.0, -1.5, 1.0}, {1.0, 1.0}, {0.0,1.0,0.0}},
+        {{1.5, 0.0, -1.5, 1.0}, {1.0, 1.0}, {0.0,1.0,0.0}},
+        {{-1.5, 0.0, -1.5, 1.0}, {0.0, 1.0}, {0.0,1.0,0.0}},
+        {{-1.5, 0.0, 1.5, 1.0}, {0.0, 0.0}, {0.0,1.0,0.0}},
     };
     
     planeVertexBuffer = metalDevice->newBuffer(&planeVertices, sizeof(planeVertices), MTL::ResourceStorageModeShared);
@@ -515,6 +667,19 @@ void MtlEngine::createRenderPassDescriptor() {
     depthAttachment->setLoadAction(MTL::LoadActionClear);
     depthAttachment->setStoreAction(MTL::StoreActionDontCare);
     depthAttachment->setClearDepth(1.0);
+}
+
+void MtlEngine::createShadowPassDescriptor() {
+    shadowPassDescriptor = MTL::RenderPassDescriptor::alloc()->init();
+    MTL::RenderPassDepthAttachmentDescriptor* depthAttachment = shadowPassDescriptor->depthAttachment();
+    depthAttachment->setTexture(shadowMapTexture);
+    depthAttachment->setLoadAction(MTL::LoadActionClear); // clear the previous pixel values before the pass
+    depthAttachment->setStoreAction(MTL::StoreActionStore); // save the rendered output to the texture
+    depthAttachment->setClearDepth(1.0); // setting depth for all pixel values
+    
+    // Tell Metal the size of the render area for depth-only pass
+    shadowPassDescriptor->setRenderTargetWidth(shadowMapTexture->width());
+    shadowPassDescriptor->setRenderTargetHeight(shadowMapTexture->height());
 }
 
 void MtlEngine::updateRenderPassDescriptor() {
