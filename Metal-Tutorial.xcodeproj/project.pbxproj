@@ -23,6 +23,7 @@
 		8FD43AE42DF72FED00253CDA /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE32DF72FEA00253CDA /* Camera.cpp */; };
 		8FD43AE62DF8711800253CDA /* light.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE52DF8711100253CDA /* light.metal */; };
 		8FD43AE82E079D8700253CDA /* BlinnPhong.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */; };
+		8FD43C352E0EDBF100253CDA /* shadowPass.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43C342E0EDBE100253CDA /* shadowPass.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BlinnPhong.metal; sourceTree = "<group>"; };
 		8FD43B4F2E0B373A00253CDA /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
 		8FD43B542E0B373A00253CDA /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
+		8FD43C342E0EDBE100253CDA /* shadowPass.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowPass.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -177,6 +179,7 @@
 		3E56AB65297E0E6E00DB5F4F /* Metal-Tutorial */ = {
 			isa = PBXGroup;
 			children = (
+				8FD43C342E0EDBE100253CDA /* shadowPass.metal */,
 				8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */,
 				8FD43AE52DF8711100253CDA /* light.metal */,
 				8FD43AE32DF72FEA00253CDA /* Camera.cpp */,
@@ -321,6 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FD43C352E0EDBF100253CDA /* shadowPass.metal in Sources */,
 				8FD43ADC2DE9015E00253CDA /* Texture.cpp in Sources */,
 				8FD43AE82E079D8700253CDA /* BlinnPhong.metal in Sources */,
 				8FD43AE02DF32F4400253CDA /* AAPLMathUtilities.cpp in Sources */,
