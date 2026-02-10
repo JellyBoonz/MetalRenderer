@@ -15,6 +15,7 @@
 		3E581F1829871D3400E5CDF6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1729871D3400E5CDF6 /* Metal.framework */; };
 		3E581F1A29871D4300E5CDF6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1929871D4300E5CDF6 /* Foundation.framework */; };
 		3E69B2312989F21B0012094B /* mtl_implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E69B2302989F21B0012094B /* mtl_implementation.cpp */; };
+		8F09BF062F3B56BF005F988C /* audio-input.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F09BF052F3B56A6005F988C /* audio-input.mm */; };
 		8F0EE81B2DE6448800EBB26C /* mtl_engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F0EE81A2DE6448100EBB26C /* mtl_engine.mm */; };
 		8F0EE81D2DE6A6CC00EBB26C /* triangle.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8F0EE81C2DE6A6C600EBB26C /* triangle.metal */; };
 		8F5A9AA12DE8B664002E8687 /* cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8F5A9AA02DE8B65F002E8687 /* cube.metal */; };
@@ -27,6 +28,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8F09BEFC2F2BC334005F988C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F09BE132F2BBCA1005F988C /* example_apple_metal.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8307E7C420E9F9C900473790;
+			remoteInfo = example_apple_metal_ios;
+		};
+		8F09BEFE2F2BC334005F988C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F09BE132F2BBCA1005F988C /* example_apple_metal.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8307E7DA20E9F9C900473790;
+			remoteInfo = example_apple_metal_macos;
+		};
+		8F09BF012F2BC334005F988C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F09BE182F2BBCA1005F988C /* example_apple_opengl2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4080A96B20B029B00036BA46;
+			remoteInfo = example_osx_opengl2;
+		};
 		8FD43C262E0B373A00253CDA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8FD43B4F2E0B373A00253CDA /* example_apple_metal.xcodeproj */;
@@ -54,7 +76,7 @@
 		3E56AB61297E0E6E00DB5F4F /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			dstPath = /usr/share/man/man1;
 			dstSubfolderSpec = 0;
 			files = (
 			);
@@ -75,6 +97,9 @@
 		3E581F1729871D3400E5CDF6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		3E581F1929871D4300E5CDF6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3E69B2302989F21B0012094B /* mtl_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mtl_implementation.cpp; sourceTree = "<group>"; };
+		8F09BE132F2BBCA1005F988C /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
+		8F09BE182F2BBCA1005F988C /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
+		8F09BF052F3B56A6005F988C /* audio-input.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "audio-input.mm"; sourceTree = "<group>"; };
 		8F0EE8192DE6431C00EBB26C /* mtl_engine.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mtl_engine.hpp; sourceTree = "<group>"; };
 		8F0EE81A2DE6448100EBB26C /* mtl_engine.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = mtl_engine.mm; sourceTree = "<group>"; };
 		8F0EE81C2DE6A6C600EBB26C /* triangle.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = triangle.metal; sourceTree = "<group>"; };
@@ -91,6 +116,7 @@
 		8FD43B4F2E0B373A00253CDA /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
 		8FD43B542E0B373A00253CDA /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
 		8FD43C342E0EDBE100253CDA /* shadowPass.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowPass.metal; sourceTree = "<group>"; };
+		8FD43C392E12A55600253CDA /* libassimp.6.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.6.0.2.dylib; path = ../../../../../opt/homebrew/Cellar/assimp/6.0.2/lib/libassimp.6.0.2.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -116,6 +142,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8F09BF032F3B5168005F988C /* miniaudio */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = miniaudio; sourceTree = "<group>"; };
 		8FD43AD02DE8FF6000253CDA /* stb */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8FD43AD92DE900DF00253CDA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = stb; sourceTree = "<group>"; };
 		8FD43AD22DE8FF7100253CDA /* assets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = assets; sourceTree = "<group>"; };
 		8FD43C1E2E0B373A00253CDA /* imgui */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8FD43C332E0C0E9E00253CDA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = imgui; sourceTree = "<group>"; };
@@ -141,6 +168,7 @@
 		3E3248AC29D0028C009CDE34 /* external */ = {
 			isa = PBXGroup;
 			children = (
+				8F09BF032F3B5168005F988C /* miniaudio */,
 				8FD43C1E2E0B373A00253CDA /* imgui */,
 				3E3248AD29D002A6009CDE34 /* GLFW */,
 				8FD43AD02DE8FF6000253CDA /* stb */,
@@ -179,6 +207,7 @@
 		3E56AB65297E0E6E00DB5F4F /* Metal-Tutorial */ = {
 			isa = PBXGroup;
 			children = (
+				8F09BF052F3B56A6005F988C /* audio-input.mm */,
 				8FD43C342E0EDBE100253CDA /* shadowPass.metal */,
 				8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */,
 				8FD43AE52DF8711100253CDA /* light.metal */,
@@ -203,6 +232,7 @@
 		3E581F1429871D3000E5CDF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8FD43C392E12A55600253CDA /* libassimp.6.0.2.dylib */,
 				3E3248B429D002D5009CDE34 /* Cocoa.framework */,
 				3E3248B229D002D0009CDE34 /* IOKit.framework */,
 				3E3248B029D002CB009CDE34 /* libglfw3.a */,
@@ -211,6 +241,23 @@
 				3E581F1529871D3000E5CDF6 /* QuartzCore.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8F09BEE22F2BBCA1005F988C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8F09BEFD2F2BC334005F988C /* example_apple_metal.app */,
+				8F09BEFF2F2BC334005F988C /* example_apple_metal.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8F09BEE42F2BBCA1005F988C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8F09BF022F2BC334005F988C /* example_osx_opengl2 */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		8FD43C1F2E0B373A00253CDA /* Products */ = {
@@ -284,8 +331,16 @@
 					ProjectRef = 8FD43B4F2E0B373A00253CDA /* example_apple_metal.xcodeproj */;
 				},
 				{
+					ProductGroup = 8F09BEE22F2BBCA1005F988C /* Products */;
+					ProjectRef = 8F09BE132F2BBCA1005F988C /* example_apple_metal.xcodeproj */;
+				},
+				{
 					ProductGroup = 8FD43C1F2E0B373A00253CDA /* Products */;
 					ProjectRef = 8FD43B542E0B373A00253CDA /* example_apple_opengl2.xcodeproj */;
+				},
+				{
+					ProductGroup = 8F09BEE42F2BBCA1005F988C /* Products */;
+					ProjectRef = 8F09BE182F2BBCA1005F988C /* example_apple_opengl2.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -296,6 +351,27 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		8F09BEFD2F2BC334005F988C /* example_apple_metal.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = example_apple_metal.app;
+			remoteRef = 8F09BEFC2F2BC334005F988C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8F09BEFF2F2BC334005F988C /* example_apple_metal.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = example_apple_metal.app;
+			remoteRef = 8F09BEFE2F2BC334005F988C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8F09BF022F2BC334005F988C /* example_osx_opengl2 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = example_osx_opengl2;
+			remoteRef = 8F09BF012F2BC334005F988C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		8FD43C272E0B373A00253CDA /* example_apple_metal.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
@@ -334,6 +410,7 @@
 				8F0EE81D2DE6A6CC00EBB26C /* triangle.metal in Sources */,
 				3E69B2312989F21B0012094B /* mtl_implementation.cpp in Sources */,
 				8F0EE81B2DE6448800EBB26C /* mtl_engine.mm in Sources */,
+				8F09BF062F3B56BF005F988C /* audio-input.mm in Sources */,
 				8F5A9AA12DE8B664002E8687 /* cube.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,10 +537,20 @@
 					"$(PROJECT_DIR)/metal-cpp",
 					"$(PROJECT_DIR)/external/GLFW/include",
 					"$(PROJECT_DIR)/external/imgui",
+					/opt/homebrew/Cellar/assimp/6.0.2/include/,
+					"$(PROJECT_DIR)/external/miniaudio/miniaudio.h",
+				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(PROJECT_DIR)/metal-cpp",
+					"$(PROJECT_DIR)/external/GLFW/include",
+					"$(PROJECT_DIR)/external/imgui",
+					/opt/homebrew/Cellar/assimp/6.0.2/include/,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/external/GLFW/lib-universal",
+					/opt/homebrew/Cellar/assimp/6.0.2/lib/,
+					/opt/homebrew/Cellar/assimp/6.0.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -479,10 +566,21 @@
 					"$(PROJECT_DIR)/metal-cpp",
 					"$(PROJECT_DIR)/external/GLFW/include",
 					"$(PROJECT_DIR)/external/imgui",
+					/opt/homebrew/Cellar/assimp/6.0.2/include/,
+					"$(PROJECT_DIR)/external/miniaudio/miniaudio.h",
+				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(PROJECT_DIR)/metal-cpp",
+					"$(PROJECT_DIR)/external/GLFW/include",
+					"$(PROJECT_DIR)/external/imgui",
+					/opt/homebrew/Cellar/assimp/6.0.2/include/,
+					"$(PROJECT_DIR)/external/miniaudio/miniaudio.h",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/external/GLFW/lib-universal",
+					/opt/homebrew/Cellar/assimp/6.0.2/lib/,
+					/opt/homebrew/Cellar/assimp/6.0.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

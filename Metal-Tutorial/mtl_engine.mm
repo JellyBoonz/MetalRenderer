@@ -3,13 +3,19 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_metal.h"
 
+// Audio function declarations
+bool initAudioCapture();
+void shutdownAudioCapture();
+
+
 void MtlEngine::init() {
     initDevice();
     initWindow();
+    if (!initAudioCapture()) {
+        std::cout << "No audio" << "\n";
+    }
 
-//    simd::float3 cubeCenter = simd::float3 {0,0,-1};
     camera = new Camera();
-//    camera->target = cubeCenter;
     
     createCube();
     createLight(); // Light cube
@@ -49,7 +55,6 @@ void MtlEngine::run() {
             camera->update();
             
             // Start ImGui frame
-//            CGSize renderSize = metalLayer.drawableSize;
             ImGui_ImplMetal_NewFrame((__bridge MTLRenderPassDescriptor*)renderPassDescriptor);
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -81,6 +86,10 @@ void MtlEngine::cleanup() {
     ImGui_ImplMetal_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+MTL::Device* MtlEngine::getDevice() {
+    return metalDevice;
 }
 
 void MtlEngine::createBuffers() {
@@ -126,12 +135,78 @@ void MtlEngine::sendRenderCommand() {
     // Encoding render commands for the render buffer
     MTL::RenderCommandEncoder* renderCommandEncoder = metalCommandBuffer->renderCommandEncoder(renderPassDescriptor);
     encodeRenderCommand(renderCommandEncoder);
+    
     renderCommandEncoder->endEncoding();    // Telling command buffer we are done issuing commands for the GPU
     
     // Telling the command buffer to present the final drawable
     metalCommandBuffer->presentDrawable(metalDrawable);
     metalCommandBuffer->commit();   // Sending command buffer to GPU
     metalCommandBuffer->waitUntilCompleted();   // Halting the application until the GPU is done processing our command.
+}
+
+void MtlEngine::encodeRenderCommand(MTL::RenderCommandEncoder* renderCommandEncoder) {
+    updateSharedTransformData();
+    
+    encodeMainCube(renderCommandEncoder);
+    encodeLightCube(renderCommandEncoder);
+    encodePlane(renderCommandEncoder);
+    
+    drawImGui(renderCommandEncoder);
+}
+
+void MtlEngine::encodeMainCube(MTL::RenderCommandEncoder *renderCommandEncoder) {
+    simd::float3 cubeColor = {1.0f, 0.5f, 0.31f};
+    NS::UInteger vertexStart = 0;
+    NS::UInteger vertexCount = 36;
+    
+    // Use the NO-SHADOW pipeline for the cube
+    renderCommandEncoder->setRenderPipelineState(blinnPhongNoShadowRenderPSO);
+    renderCommandEncoder->setDepthStencilState(depthStencilState);
+    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
+    renderCommandEncoder->setCullMode(MTL::CullModeBack);
+    
+    renderCommandEncoder->setVertexBuffer(cubeVertexBuffer, 0, 0);
+    renderCommandEncoder->setVertexBuffer(transformationBuffer, 0, 1);
+    renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 2);
+    // No need to set shadow texture/sampler for no-shadow pipeline
+    renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
+    renderCommandEncoder->setFragmentBytes(&cubeColor, sizeof(cubeColor), 0);
+    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
+}
+
+void MtlEngine::encodeLightCube(MTL::RenderCommandEncoder* renderCommandEncoder) {
+    NS::UInteger vertexStart = 0;
+    NS::UInteger vertexCount = 36;
+    renderCommandEncoder->setRenderPipelineState(metalLightSourceRenderPSO);
+    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
+    renderCommandEncoder->setCullMode(MTL::CullModeBack);
+    renderCommandEncoder->setVertexBuffer(lightVertexBuffer, 0, 0);
+    renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 1);
+    renderCommandEncoder->setFragmentBytes(&lightColor, sizeof(lightColor), 0);
+    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
+}
+
+void MtlEngine::encodePlane(MTL::RenderCommandEncoder *renderCommandEncoder) {
+    NS::UInteger vertexStart = 0;
+    NS::UInteger vertexCount = 6;
+    
+    // Use the WITH-SHADOW pipeline for the plane
+    renderCommandEncoder->setRenderPipelineState(blinnPhongRenderPSO); // This should use fragmentBP_WithShadow
+    renderCommandEncoder->setDepthStencilState(depthStencilState);
+    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
+    renderCommandEncoder->setCullMode(MTL::CullModeBack);
+
+    renderCommandEncoder->setVertexBuffer(planeVertexBuffer, 0, 0);
+    renderCommandEncoder->setVertexBuffer(planeTransformBuffer, 0, 1);
+    renderCommandEncoder->setVertexBuffer(shadowTransformBuffer, 0, 2);
+    renderCommandEncoder->setFragmentTexture(shadowMapTexture, 0);
+    renderCommandEncoder->setFragmentSamplerState(shadowSampler, 0);
+    renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
+
+    simd::float3 color = {0.5f, 0.7f, 0.5f};
+    renderCommandEncoder->setFragmentBytes(&color, sizeof(color), 0);
+
+    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
 }
 
 void MtlEngine::updateSharedTransformData() {
@@ -204,72 +279,16 @@ void MtlEngine::updateSharedTransformData() {
     LightingData lightingData;
     lightingData.cameraPos = camera->getPosition();
     lightingData.lightPos = lightPosition;
-    lightingData.lightColor = simd::float3 {1.0f, 1.0f, 1.0f};
+    lightingData.lightColor = lightColor;
     lightingData.lightIntensity = 0.7f;
     lightingData.ambientIntensity = 0.1f;
     lightingData.shininess = 32.0f;
     memcpy(lightingBuffer->contents(), &lightingData, sizeof(lightingData));
 }
 
-void MtlEngine::encodeMainCube(MTL::RenderCommandEncoder *renderCommandEncoder) {
-    simd::float3 cubeColor = {1.0f, 0.5f, 0.31f};
-    NS::UInteger vertexStart = 0;
-    NS::UInteger vertexCount = 36;
-    
-    // Use the NO-SHADOW pipeline for the cube
-    renderCommandEncoder->setRenderPipelineState(blinnPhongNoShadowRenderPSO);
-    renderCommandEncoder->setDepthStencilState(depthStencilState);
-    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
-    renderCommandEncoder->setCullMode(MTL::CullModeBack);
-    
-    renderCommandEncoder->setVertexBuffer(cubeVertexBuffer, 0, 0);
-    renderCommandEncoder->setVertexBuffer(transformationBuffer, 0, 1);
-    renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 2);
-    // No need to set shadow texture/sampler for no-shadow pipeline
-    renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
-    renderCommandEncoder->setFragmentBytes(&cubeColor, sizeof(cubeColor), 0);
-    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
-}
-
-void MtlEngine::encodeLightCube(MTL::RenderCommandEncoder* renderCommandEncoder) {
-    simd::float3 lightColor = {1.0f, 1.0f, 1.0f};
-    NS::UInteger vertexStart = 0;
-    NS::UInteger vertexCount = 36;
-    renderCommandEncoder->setRenderPipelineState(metalLightSourceRenderPSO);
-    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
-    renderCommandEncoder->setCullMode(MTL::CullModeBack);
-    renderCommandEncoder->setVertexBuffer(lightVertexBuffer, 0, 0);
-    renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 1);
-    renderCommandEncoder->setFragmentBytes(&lightColor, sizeof(lightColor), 0);
-    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
-}
-
-void MtlEngine::encodePlane(MTL::RenderCommandEncoder *renderCommandEncoder) {
-    NS::UInteger vertexStart = 0;
-    NS::UInteger vertexCount = 6;
-    
-    // Use the WITH-SHADOW pipeline for the plane
-    renderCommandEncoder->setRenderPipelineState(blinnPhongRenderPSO); // This should use fragmentBP_WithShadow
-    renderCommandEncoder->setDepthStencilState(depthStencilState);
-    renderCommandEncoder->setFrontFacingWinding(MTL::WindingCounterClockwise);
-    renderCommandEncoder->setCullMode(MTL::CullModeBack);
-
-    renderCommandEncoder->setVertexBuffer(planeVertexBuffer, 0, 0);
-    renderCommandEncoder->setVertexBuffer(planeTransformBuffer, 0, 1);
-    renderCommandEncoder->setVertexBuffer(shadowTransformBuffer, 0, 2);
-    renderCommandEncoder->setFragmentTexture(shadowMapTexture, 0);
-    renderCommandEncoder->setFragmentSamplerState(shadowSampler, 0);
-    renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
-
-    simd::float3 color = {0.5f, 0.7f, 0.5f};
-    renderCommandEncoder->setFragmentBytes(&color, sizeof(color), 0);
-
-    renderCommandEncoder->drawPrimitives(MTL::PrimitiveTypeTriangle, vertexStart, vertexCount);
-}
 
 void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
     // Build ImGui UI
-    simd::float3 lightColor = {1.0f, 1.0f, 1.0f};
     ImGui::Begin("Scene Controls");
     ImGui::SliderFloat3("Light Position", (float*)&lightPosition, -5.0f, 5.0f);
     ImGui::SliderFloat3("Cube Position", (float*)&cubePosition, -5.0f, 5.0f);
@@ -284,18 +303,9 @@ void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
 }
 
 
-void MtlEngine::encodeRenderCommand(MTL::RenderCommandEncoder* renderCommandEncoder) {
-    updateSharedTransformData();
-    
-    encodeMainCube(renderCommandEncoder);
-    encodeLightCube(renderCommandEncoder);
-    encodePlane(renderCommandEncoder);
-    
-    drawImGui(renderCommandEncoder);
-}
 
 /**
- The command queue is responsible for creating command buffers, which are chunks of works sent to the GPU from the command queue. These commands are executed via shader code.
+ The command queue is responsible for creating command buffers, which are chunks of work sent to the GPU from the command queue. These commands are executed via shader code.
  */
 void MtlEngine::createCommandQueue() {
     metalCommandQueue = metalDevice->newCommandQueue();

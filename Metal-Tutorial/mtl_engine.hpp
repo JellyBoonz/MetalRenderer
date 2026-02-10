@@ -5,8 +5,6 @@
 #define GLFW_EXPOSE_NATIVE_COCOA
 #import <GLFW/glfw3native.h>
 
-#include <Metal/Metal.hpp>
-#include <Metal/Metal.h>
 #include <QuartzCore/CAMetalLayer.hpp>
 #include <QuartzCore/CAMetalLayer.h>
 #include <QuartzCore/QuartzCore.hpp>
@@ -28,11 +26,14 @@ public:
     void init();
     void run();
     void cleanup();
+    
+    MTL::Device* getDevice();
 
 private:
     void initDevice();
     void initWindow();
 
+    // Create objects
     void createTriangle();
     void createSquare();
     void createCube();
@@ -108,10 +109,12 @@ private:
     MTL::Buffer *triangleVertexBuffer;
     MTL::Buffer *squareVertexBuffer;
     MTL::Buffer *cubeVertexBuffer;
+    
     MTL::Buffer *lightVertexBuffer;
     MTL::Buffer *lightCubeVertexBuffer;
     MTL::Buffer *lightTransformationBuffer;
     MTL::Buffer *lightingBuffer;
+    
     MTL::Buffer *planeVertexBuffer;
     MTL::Buffer *planeTransformBuffer;
     MTL::Buffer *transformationBuffer;
@@ -136,4 +139,5 @@ private:
     // ImGui controlled positions
     simd::float3 lightPosition = {0.0f, 2.0f, 0.0f};
     simd::float3 cubePosition = {0.0f, 0.0f, -1.0f};
+    simd::float3 lightColor = {1.0f, 1.0f, 1.0f};
 };
