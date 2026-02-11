@@ -7,12 +7,16 @@
 bool initAudioCapture();
 void shutdownAudioCapture();
 
+extern "C" bool audioInputMinimal_start();
+extern "C" void audioInputMinimal_stop();
+extern "C" float audioInputMinimal_currentRMS();
+extern "C" float audioInputMinimal_rollingAvg();
 
 void MtlEngine::init() {
     initDevice();
     initWindow();
-    if (!initAudioCapture()) {
-        std::cout << "No audio" << "\n";
+    if (!audioInputMinimal_start()) {
+        std::cout << "Audio failed to start" << "\n";
     }
 
     camera = new Camera();
@@ -73,6 +77,8 @@ void MtlEngine::cleanup() {
     
     // Then terminate GLFW
     glfwTerminate();
+    
+    audioInputMinimal_stop();
     
     // Clean up Metal resources
     transformationBuffer->release();
@@ -279,6 +285,11 @@ void MtlEngine::updateSharedTransformData() {
     LightingData lightingData;
     lightingData.cameraPos = camera->getPosition();
     lightingData.lightPos = lightPosition;
+    
+    float audioAvg = audioInputMinimal_currentRMS();
+    float normalized = std::min(1.0f, audioAvg * 25.0f);
+    lightColor = {normalized, 0.3f, 1.0f - normalized};
+    
     lightingData.lightColor = lightColor;
     lightingData.lightIntensity = 0.7f;
     lightingData.ambientIntensity = 0.1f;
@@ -293,6 +304,13 @@ void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
     ImGui::SliderFloat3("Light Position", (float*)&lightPosition, -5.0f, 5.0f);
     ImGui::SliderFloat3("Cube Position", (float*)&cubePosition, -5.0f, 5.0f);
     ImGui::ColorEdit3("Light Color", reinterpret_cast<float*>(&lightColor));
+    
+    float rms = audioInputMinimal_currentRMS();
+    float avg = audioInputMinimal_rollingAvg();
+    ImGui::Separator();
+    ImGui::Text("Audio RMS: %.4f", rms);
+    ImGui::Text("Audio Rolling Avg: %.4f", avg);
+    
     ImGui::End();
     
     // Render ImGui
@@ -650,12 +668,12 @@ void MtlEngine::createTriangle() {
 
 void MtlEngine::createSquare() {
     VertexData squareVertices[] = {
-        {{-0.5, -0.5,  0.5, 1.0f}, {0.0f, 0.0f}},
-        {{-0.5,  0.5,  0.5, 1.0f}, {0.0f, 1.0f}},
-        {{ 0.5,  0.5,  0.5, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5, -0.5,  0.5, 1.0f}, {0.0f, 0.0f}},
-        {{ 0.5,  0.5,  0.5, 1.0f}, {1.0f, 1.0f}},
-        {{ 0.5, -0.5,  0.5, 1.0f}, {1.0f, 0.0f}}
+        {{-0.5, -0.5,  0.5, 1.0f}, {0.0, 0.0}},
+        {{-0.5,  0.5,  0.5, 1.0f}, {0.0, 1.0}},
+        {{ 0.5,  0.5,  0.5, 1.0f}, {1.0, 1.0}},
+        {{-0.5, -0.5,  0.5, 1.0f}, {0.0, 0.0}},
+        {{ 0.5,  0.5,  0.5, 1.0f}, {1.0, 1.0}},
+        {{ 0.5, -0.5,  0.5, 1.0f}, {1.0, 0.0}}
     };
     
     squareVertexBuffer = metalDevice->newBuffer(&squareVertices, sizeof(squareVertices), MTL::ResourceStorageModeShared);
