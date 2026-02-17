@@ -10,12 +10,12 @@
 #include <QuartzCore/QuartzCore.hpp>
 #include <simd/simd.h> // Apple library for calculating vector and matrix computations efficiently
 #include <iostream>
-#include "../external/stb/stb_image.h"
+#include "../../external/stb/stb_image.h"
 
 #include "VertexData.hpp"
 #include "Texture.hpp"
 #include "Camera.hpp"
-#include "../external/stb/stb_image.h"
+#include "../../external/stb/stb_image.h"
 #include "AAPLMathUtilities.h"
 
 #include <filesystem>

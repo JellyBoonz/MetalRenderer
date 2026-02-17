@@ -14,18 +14,6 @@
 		3E581F1629871D3000E5CDF6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1529871D3000E5CDF6 /* QuartzCore.framework */; };
 		3E581F1829871D3400E5CDF6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1729871D3400E5CDF6 /* Metal.framework */; };
 		3E581F1A29871D4300E5CDF6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1929871D4300E5CDF6 /* Foundation.framework */; };
-		3E69B2312989F21B0012094B /* mtl_implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E69B2302989F21B0012094B /* mtl_implementation.cpp */; };
-		8F09BF062F3B56BF005F988C /* audio-input.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F09BF052F3B56A6005F988C /* audio-input.mm */; };
-		8F09BF222F3B802A005F988C /* AudioInputLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F09BF212F3B802A005F988C /* AudioInputLayer.mm */; };
-		8F0EE81B2DE6448800EBB26C /* mtl_engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F0EE81A2DE6448100EBB26C /* mtl_engine.mm */; };
-		8F0EE81D2DE6A6CC00EBB26C /* triangle.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8F0EE81C2DE6A6C600EBB26C /* triangle.metal */; };
-		8F5A9AA12DE8B664002E8687 /* cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8F5A9AA02DE8B65F002E8687 /* cube.metal */; };
-		8FD43ADC2DE9015E00253CDA /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43ADB2DE9015800253CDA /* Texture.cpp */; };
-		8FD43AE02DF32F4400253CDA /* AAPLMathUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43ADF2DF32F4400253CDA /* AAPLMathUtilities.cpp */; };
-		8FD43AE42DF72FED00253CDA /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE32DF72FEA00253CDA /* Camera.cpp */; };
-		8FD43AE62DF8711800253CDA /* light.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE52DF8711100253CDA /* light.metal */; };
-		8FD43AE82E079D8700253CDA /* BlinnPhong.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */; };
-		8FD43C352E0EDBF100253CDA /* shadowPass.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FD43C342E0EDBE100253CDA /* shadowPass.metal */; };
 		8FDA0D7C2F3B838900C82FA9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FDA0D722F3B838900C82FA9 /* AVFoundation.framework */; };
 		8FDA0D932F3B86F100C82FA9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FDA0D722F3B838900C82FA9 /* AVFoundation.framework */; };
 		8FDA0D942F3B86F800C82FA9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E3248B429D002D5009CDE34 /* Cocoa.framework */; };
@@ -34,7 +22,6 @@
 		8FDA0D972F3B873400C82FA9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1929871D4300E5CDF6 /* Foundation.framework */; };
 		8FDA0D982F3B873A00C82FA9 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1729871D3400E5CDF6 /* Metal.framework */; };
 		8FDA0D992F3B874100C82FA9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E581F1529871D3000E5CDF6 /* QuartzCore.framework */; };
-		8FDA0D9A2F3B8C0300C82FA9 /* AudioInputLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F09BF212F3B802A005F988C /* AudioInputLayer.mm */; };
 		8FDA0D9C2F3B94CB00C82FA9 /* stbi_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0D9B2F3B94CB00C82FA9 /* stbi_image.cpp */; };
 		8FDA0D9F2F3B94D200C82FA9 /* imgui_impl_glfw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0D9D2F3B94D200C82FA9 /* imgui_impl_glfw.cpp */; };
 		8FDA0DA02F3B94D200C82FA9 /* imgui_impl_metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0D9E2F3B94D200C82FA9 /* imgui_impl_metal.mm */; };
@@ -42,16 +29,24 @@
 		8FDA0DA62F3B94DC00C82FA9 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DA22F3B94DC00C82FA9 /* imgui_widgets.cpp */; };
 		8FDA0DA72F3B94DC00C82FA9 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DA32F3B94DC00C82FA9 /* imgui.cpp */; };
 		8FDA0DA82F3B94DC00C82FA9 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DA42F3B94DC00C82FA9 /* imgui_draw.cpp */; };
-		8FDA0DB62F3B94E500C82FA9 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DA92F3B94E400C82FA9 /* Texture.cpp */; };
-		8FDA0DB72F3B94E500C82FA9 /* AAPLMathUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DAA2F3B94E400C82FA9 /* AAPLMathUtilities.cpp */; };
-		8FDA0DB82F3B94E500C82FA9 /* light.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DAB2F3B94E400C82FA9 /* light.metal */; };
-		8FDA0DB92F3B94E500C82FA9 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DAC2F3B94E400C82FA9 /* Camera.cpp */; };
-		8FDA0DBA2F3B94E500C82FA9 /* shadowPass.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DAD2F3B94E400C82FA9 /* shadowPass.metal */; };
-		8FDA0DBC2F3B94E500C82FA9 /* triangle.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DAF2F3B94E400C82FA9 /* triangle.metal */; };
-		8FDA0DBE2F3B94E500C82FA9 /* mtl_implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DB12F3B94E500C82FA9 /* mtl_implementation.cpp */; };
-		8FDA0DBF2F3B94E500C82FA9 /* BlinnPhong.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DB22F3B94E500C82FA9 /* BlinnPhong.metal */; };
-		8FDA0DC02F3B94E500C82FA9 /* cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DB32F3B94E500C82FA9 /* cube.metal */; };
-		8FDA0DC12F3B94E500C82FA9 /* mtl_engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DB42F3B94E500C82FA9 /* mtl_engine.mm */; };
+		8FDA0DEA2F3CB15100C82FA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FDA0DE32F3CB15100C82FA9 /* Assets.xcassets */; };
+		8FDA0DEB2F3CB15100C82FA9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FDA0DE62F3CB15100C82FA9 /* Main.storyboard */; };
+		8FDA0DF82F3CB15100C82FA9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DE22F3CB15100C82FA9 /* AppDelegate.mm */; };
+		8FDA0DF92F3CB15100C82FA9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DE42F3CB15100C82FA9 /* main.m */; };
+		8FDA0DFA2F3CB15100C82FA9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0DE82F3CB15100C82FA9 /* ViewController.m */; };
+		8FDA0E3A2F3CB24800C82FA9 /* AudioInputLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E2B2F3CB24800C82FA9 /* AudioInputLayer.mm */; };
+		8FDA0E3B2F3CB24800C82FA9 /* mtl_implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E332F3CB24800C82FA9 /* mtl_implementation.cpp */; };
+		8FDA0E3C2F3CB24800C82FA9 /* cube.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E2F2F3CB24800C82FA9 /* cube.metal */; };
+		8FDA0E3D2F3CB24800C82FA9 /* BlinnPhong.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E2C2F3CB24800C82FA9 /* BlinnPhong.metal */; };
+		8FDA0E3F2F3CB24800C82FA9 /* AAPLMathUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E282F3CB24800C82FA9 /* AAPLMathUtilities.cpp */; };
+		8FDA0E402F3CB24800C82FA9 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E362F3CB24800C82FA9 /* Texture.cpp */; };
+		8FDA0E412F3CB24800C82FA9 /* mtl_engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E322F3CB24800C82FA9 /* mtl_engine.mm */; };
+		8FDA0E422F3CB24800C82FA9 /* light.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E302F3CB24800C82FA9 /* light.metal */; };
+		8FDA0E432F3CB24800C82FA9 /* triangle.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E372F3CB24800C82FA9 /* triangle.metal */; };
+		8FDA0E442F3CB24800C82FA9 /* shadowPass.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E342F3CB24800C82FA9 /* shadowPass.metal */; };
+		8FDA0E452F3CB24800C82FA9 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E2E2F3CB24800C82FA9 /* Camera.cpp */; };
+		8FDA0E492F3DF72600C82FA9 /* AudioAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E482F3DF72600C82FA9 /* AudioAnalyzer.mm */; };
+		8FDA0E4B2F3F8C4200C82FA9 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FDA0E4A2F3F8C4200C82FA9 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,28 +139,11 @@
 		3E581F1529871D3000E5CDF6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3E581F1729871D3400E5CDF6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		3E581F1929871D4300E5CDF6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		3E69B2302989F21B0012094B /* mtl_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mtl_implementation.cpp; sourceTree = "<group>"; };
 		8F09BE132F2BBCA1005F988C /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
 		8F09BE182F2BBCA1005F988C /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
-		8F09BF052F3B56A6005F988C /* audio-input.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "audio-input.mm"; sourceTree = "<group>"; };
 		8F09BF202F3B7B1A005F988C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8F09BF212F3B802A005F988C /* AudioInputLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioInputLayer.mm; sourceTree = "<group>"; };
-		8F0EE8192DE6431C00EBB26C /* mtl_engine.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mtl_engine.hpp; sourceTree = "<group>"; };
-		8F0EE81A2DE6448100EBB26C /* mtl_engine.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = mtl_engine.mm; sourceTree = "<group>"; };
-		8F0EE81C2DE6A6C600EBB26C /* triangle.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = triangle.metal; sourceTree = "<group>"; };
-		8F5A9AA02DE8B65F002E8687 /* cube.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = cube.metal; sourceTree = "<group>"; };
-		8FD43ADA2DE9011400253CDA /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
-		8FD43ADB2DE9015800253CDA /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
-		8FD43ADD2DE902F300253CDA /* VertexData.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VertexData.hpp; sourceTree = "<group>"; };
-		8FD43ADE2DF32F4400253CDA /* AAPLMathUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AAPLMathUtilities.h; sourceTree = "<group>"; };
-		8FD43ADF2DF32F4400253CDA /* AAPLMathUtilities.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AAPLMathUtilities.cpp; sourceTree = "<group>"; };
-		8FD43AE22DF72FE000253CDA /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
-		8FD43AE32DF72FEA00253CDA /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
-		8FD43AE52DF8711100253CDA /* light.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = light.metal; sourceTree = "<group>"; };
-		8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BlinnPhong.metal; sourceTree = "<group>"; };
 		8FD43B4F2E0B373A00253CDA /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
 		8FD43B542E0B373A00253CDA /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
-		8FD43C342E0EDBE100253CDA /* shadowPass.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowPass.metal; sourceTree = "<group>"; };
 		8FD43C392E12A55600253CDA /* libassimp.6.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.6.0.2.dylib; path = ../../../../../opt/homebrew/Cellar/assimp/6.0.2/lib/libassimp.6.0.2.dylib; sourceTree = "<group>"; };
 		8FDA0C942F3B816F00C82FA9 /* example_apple_metal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_metal.xcodeproj; sourceTree = "<group>"; };
 		8FDA0C992F3B816F00C82FA9 /* example_apple_opengl2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = example_apple_opengl2.xcodeproj; sourceTree = "<group>"; };
@@ -178,20 +156,33 @@
 		8FDA0DA22F3B94DC00C82FA9 /* imgui_widgets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_widgets.cpp; path = external/imgui/imgui_widgets.cpp; sourceTree = "<group>"; };
 		8FDA0DA32F3B94DC00C82FA9 /* imgui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = external/imgui/imgui.cpp; sourceTree = "<group>"; };
 		8FDA0DA42F3B94DC00C82FA9 /* imgui_draw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_draw.cpp; path = external/imgui/imgui_draw.cpp; sourceTree = "<group>"; };
-		8FDA0DA92F3B94E400C82FA9 /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Texture.cpp; path = "Metal-Tutorial/Texture.cpp"; sourceTree = "<group>"; };
-		8FDA0DAA2F3B94E400C82FA9 /* AAPLMathUtilities.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AAPLMathUtilities.cpp; path = "Metal-Tutorial/AAPLMathUtilities.cpp"; sourceTree = "<group>"; };
-		8FDA0DAB2F3B94E400C82FA9 /* light.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = light.metal; path = "Metal-Tutorial/light.metal"; sourceTree = "<group>"; };
-		8FDA0DAC2F3B94E400C82FA9 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = "Metal-Tutorial/Camera.cpp"; sourceTree = "<group>"; };
-		8FDA0DAD2F3B94E400C82FA9 /* shadowPass.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = shadowPass.metal; path = "Metal-Tutorial/shadowPass.metal"; sourceTree = "<group>"; };
-		8FDA0DAE2F3B94E400C82FA9 /* audio-input.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "audio-input.mm"; path = "Metal-Tutorial/audio-input.mm"; sourceTree = "<group>"; };
-		8FDA0DAF2F3B94E400C82FA9 /* triangle.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = triangle.metal; path = "Metal-Tutorial/triangle.metal"; sourceTree = "<group>"; };
-		8FDA0DB02F3B94E500C82FA9 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "Metal-Tutorial/main.mm"; sourceTree = "<group>"; };
-		8FDA0DB12F3B94E500C82FA9 /* mtl_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = mtl_implementation.cpp; path = "Metal-Tutorial/mtl_implementation.cpp"; sourceTree = "<group>"; };
-		8FDA0DB22F3B94E500C82FA9 /* BlinnPhong.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = BlinnPhong.metal; path = "Metal-Tutorial/BlinnPhong.metal"; sourceTree = "<group>"; };
-		8FDA0DB32F3B94E500C82FA9 /* cube.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = cube.metal; path = "Metal-Tutorial/cube.metal"; sourceTree = "<group>"; };
-		8FDA0DB42F3B94E500C82FA9 /* mtl_engine.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = mtl_engine.mm; path = "Metal-Tutorial/mtl_engine.mm"; sourceTree = "<group>"; };
-		8FDA0DB52F3B94E500C82FA9 /* AudioInputLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = AudioInputLayer.mm; path = "Metal-Tutorial/AudioInputLayer.mm"; sourceTree = "<group>"; };
-		8FDA0DC22F3C22D700C82FA9 /* AudioInputLayer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioInputLayer.hpp; sourceTree = "<group>"; };
+		8FDA0DE12F3CB15100C82FA9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		8FDA0DE22F3CB15100C82FA9 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		8FDA0DE32F3CB15100C82FA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8FDA0DE42F3CB15100C82FA9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8FDA0DE52F3CB15100C82FA9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8FDA0DE72F3CB15100C82FA9 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		8FDA0DE82F3CB15100C82FA9 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		8FDA0E272F3CB24800C82FA9 /* AAPLMathUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AAPLMathUtilities.h; sourceTree = "<group>"; };
+		8FDA0E282F3CB24800C82FA9 /* AAPLMathUtilities.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AAPLMathUtilities.cpp; sourceTree = "<group>"; };
+		8FDA0E2A2F3CB24800C82FA9 /* AudioInputLayer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioInputLayer.hpp; sourceTree = "<group>"; };
+		8FDA0E2B2F3CB24800C82FA9 /* AudioInputLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioInputLayer.mm; sourceTree = "<group>"; };
+		8FDA0E2C2F3CB24800C82FA9 /* BlinnPhong.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BlinnPhong.metal; sourceTree = "<group>"; };
+		8FDA0E2D2F3CB24800C82FA9 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		8FDA0E2E2F3CB24800C82FA9 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		8FDA0E2F2F3CB24800C82FA9 /* cube.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = cube.metal; sourceTree = "<group>"; };
+		8FDA0E302F3CB24800C82FA9 /* light.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = light.metal; sourceTree = "<group>"; };
+		8FDA0E312F3CB24800C82FA9 /* mtl_engine.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mtl_engine.hpp; sourceTree = "<group>"; };
+		8FDA0E322F3CB24800C82FA9 /* mtl_engine.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = mtl_engine.mm; sourceTree = "<group>"; };
+		8FDA0E332F3CB24800C82FA9 /* mtl_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mtl_implementation.cpp; sourceTree = "<group>"; };
+		8FDA0E342F3CB24800C82FA9 /* shadowPass.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowPass.metal; sourceTree = "<group>"; };
+		8FDA0E352F3CB24800C82FA9 /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
+		8FDA0E362F3CB24800C82FA9 /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		8FDA0E372F3CB24800C82FA9 /* triangle.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = triangle.metal; sourceTree = "<group>"; };
+		8FDA0E382F3CB24800C82FA9 /* VertexData.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VertexData.hpp; sourceTree = "<group>"; };
+		8FDA0E472F3DF70C00C82FA9 /* AudioAnalyzer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioAnalyzer.hpp; sourceTree = "<group>"; };
+		8FDA0E482F3DF72600C82FA9 /* AudioAnalyzer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioAnalyzer.mm; sourceTree = "<group>"; };
+		8FDA0E4A2F3F8C4200C82FA9 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -221,7 +212,6 @@
 		8FD43AD02DE8FF6000253CDA /* stb */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8FD43AD92DE900DF00253CDA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = stb; sourceTree = "<group>"; };
 		8FD43AD22DE8FF7100253CDA /* assets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = assets; sourceTree = "<group>"; };
 		8FD43C1E2E0B373A00253CDA /* imgui */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8FD43C332E0C0E9E00253CDA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = imgui; sourceTree = "<group>"; };
-		8FDA0D822F3B85BF00C82FA9 /* AudioApp */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AudioApp; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +233,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FDA0E4B2F3F8C4200C82FA9 /* Accelerate.framework in Frameworks */,
 				8FDA0D992F3B874100C82FA9 /* QuartzCore.framework in Frameworks */,
 				8FDA0D982F3B873A00C82FA9 /* Metal.framework in Frameworks */,
 				8FDA0D972F3B873400C82FA9 /* Foundation.framework in Frameworks */,
@@ -279,20 +270,6 @@
 		3E56AB5A297E0E6E00DB5F4F = {
 			isa = PBXGroup;
 			children = (
-				8FDA0DAA2F3B94E400C82FA9 /* AAPLMathUtilities.cpp */,
-				8FDA0DAE2F3B94E400C82FA9 /* audio-input.mm */,
-				8FDA0DC22F3C22D700C82FA9 /* AudioInputLayer.hpp */,
-				8FDA0DB52F3B94E500C82FA9 /* AudioInputLayer.mm */,
-				8FDA0DB22F3B94E500C82FA9 /* BlinnPhong.metal */,
-				8FDA0DAC2F3B94E400C82FA9 /* Camera.cpp */,
-				8FDA0DB32F3B94E500C82FA9 /* cube.metal */,
-				8FDA0DAB2F3B94E400C82FA9 /* light.metal */,
-				8FDA0DB02F3B94E500C82FA9 /* main.mm */,
-				8FDA0DB42F3B94E500C82FA9 /* mtl_engine.mm */,
-				8FDA0DB12F3B94E500C82FA9 /* mtl_implementation.cpp */,
-				8FDA0DAD2F3B94E400C82FA9 /* shadowPass.metal */,
-				8FDA0DA92F3B94E400C82FA9 /* Texture.cpp */,
-				8FDA0DAF2F3B94E400C82FA9 /* triangle.metal */,
 				8FDA0DA32F3B94DC00C82FA9 /* imgui.cpp */,
 				8FDA0DA42F3B94DC00C82FA9 /* imgui_draw.cpp */,
 				8FDA0DA12F3B94DC00C82FA9 /* imgui_tables.cpp */,
@@ -303,9 +280,9 @@
 				3E3248AC29D0028C009CDE34 /* external */,
 				3E47CD272987185800938A41 /* metal-cpp */,
 				3E56AB65297E0E6E00DB5F4F /* Metal-Tutorial */,
-				8FDA0D822F3B85BF00C82FA9 /* AudioApp */,
 				3E56AB64297E0E6E00DB5F4F /* Products */,
 				3E581F1429871D3000E5CDF6 /* Frameworks */,
+				8FDA0DE92F3CB15100C82FA9 /* AudioApp */,
 			);
 			sourceTree = "<group>";
 		};
@@ -321,26 +298,8 @@
 		3E56AB65297E0E6E00DB5F4F /* Metal-Tutorial */ = {
 			isa = PBXGroup;
 			children = (
-				8F09BF052F3B56A6005F988C /* audio-input.mm */,
-				8FD43C342E0EDBE100253CDA /* shadowPass.metal */,
-				8FD43AE72E079D7C00253CDA /* BlinnPhong.metal */,
-				8FD43AE52DF8711100253CDA /* light.metal */,
-				8FD43AE32DF72FEA00253CDA /* Camera.cpp */,
-				8FD43AE22DF72FE000253CDA /* Camera.hpp */,
-				8FD43ADE2DF32F4400253CDA /* AAPLMathUtilities.h */,
-				8FD43ADF2DF32F4400253CDA /* AAPLMathUtilities.cpp */,
-				8FD43ADD2DE902F300253CDA /* VertexData.hpp */,
-				8FD43ADB2DE9015800253CDA /* Texture.cpp */,
-				8FD43ADA2DE9011400253CDA /* Texture.hpp */,
-				8F5A9AA02DE8B65F002E8687 /* cube.metal */,
-				8F0EE81C2DE6A6C600EBB26C /* triangle.metal */,
-				8F0EE81A2DE6448100EBB26C /* mtl_engine.mm */,
-				8F0EE8192DE6431C00EBB26C /* mtl_engine.hpp */,
-				3E56AB66297E0E6E00DB5F4F /* main.mm */,
-				3E69B2302989F21B0012094B /* mtl_implementation.cpp */,
 				8FD43AD22DE8FF7100253CDA /* assets */,
 				8F09BF202F3B7B1A005F988C /* Info.plist */,
-				8F09BF212F3B802A005F988C /* AudioInputLayer.mm */,
 			);
 			path = "Metal-Tutorial";
 			sourceTree = "<group>";
@@ -348,6 +307,7 @@
 		3E581F1429871D3000E5CDF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8FDA0E4A2F3F8C4200C82FA9 /* Accelerate.framework */,
 				8FDA0D722F3B838900C82FA9 /* AVFoundation.framework */,
 				8FD43C392E12A55600253CDA /* libassimp.6.0.2.dylib */,
 				3E3248B429D002D5009CDE34 /* Cocoa.framework */,
@@ -411,6 +371,56 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8FDA0DCD2F3CB15100C82FA9 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		8FDA0DE92F3CB15100C82FA9 /* AudioApp */ = {
+			isa = PBXGroup;
+			children = (
+				8FDA0E392F3CB24800C82FA9 /* Engine */,
+				8FDA0DCD2F3CB15100C82FA9 /* assets */,
+				8FDA0DE12F3CB15100C82FA9 /* AppDelegate.h */,
+				8FDA0DE22F3CB15100C82FA9 /* AppDelegate.mm */,
+				8FDA0DE32F3CB15100C82FA9 /* Assets.xcassets */,
+				8FDA0DE42F3CB15100C82FA9 /* main.m */,
+				8FDA0DE62F3CB15100C82FA9 /* Main.storyboard */,
+				8FDA0DE72F3CB15100C82FA9 /* ViewController.h */,
+				8FDA0DE82F3CB15100C82FA9 /* ViewController.m */,
+			);
+			path = AudioApp;
+			sourceTree = "<group>";
+		};
+		8FDA0E392F3CB24800C82FA9 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				8FDA0E482F3DF72600C82FA9 /* AudioAnalyzer.mm */,
+				8FDA0E472F3DF70C00C82FA9 /* AudioAnalyzer.hpp */,
+				8FDA0E272F3CB24800C82FA9 /* AAPLMathUtilities.h */,
+				8FDA0E282F3CB24800C82FA9 /* AAPLMathUtilities.cpp */,
+				8FDA0E2A2F3CB24800C82FA9 /* AudioInputLayer.hpp */,
+				8FDA0E2B2F3CB24800C82FA9 /* AudioInputLayer.mm */,
+				8FDA0E2C2F3CB24800C82FA9 /* BlinnPhong.metal */,
+				8FDA0E2D2F3CB24800C82FA9 /* Camera.hpp */,
+				8FDA0E2E2F3CB24800C82FA9 /* Camera.cpp */,
+				8FDA0E2F2F3CB24800C82FA9 /* cube.metal */,
+				8FDA0E302F3CB24800C82FA9 /* light.metal */,
+				8FDA0E312F3CB24800C82FA9 /* mtl_engine.hpp */,
+				8FDA0E322F3CB24800C82FA9 /* mtl_engine.mm */,
+				8FDA0E332F3CB24800C82FA9 /* mtl_implementation.cpp */,
+				8FDA0E342F3CB24800C82FA9 /* shadowPass.metal */,
+				8FDA0E352F3CB24800C82FA9 /* Texture.hpp */,
+				8FDA0E362F3CB24800C82FA9 /* Texture.cpp */,
+				8FDA0E372F3CB24800C82FA9 /* triangle.metal */,
+				8FDA0E382F3CB24800C82FA9 /* VertexData.hpp */,
+				3E56AB66297E0E6E00DB5F4F /* main.mm */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -445,9 +455,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				8FDA0D822F3B85BF00C82FA9 /* AudioApp */,
 			);
 			name = AudioApp;
 			packageProductDependencies = (
@@ -589,6 +596,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FDA0DEA2F3CB15100C82FA9 /* Assets.xcassets in Resources */,
+				8FDA0DEB2F3CB15100C82FA9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,19 +608,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FD43C352E0EDBF100253CDA /* shadowPass.metal in Sources */,
-				8FD43ADC2DE9015E00253CDA /* Texture.cpp in Sources */,
-				8FD43AE82E079D8700253CDA /* BlinnPhong.metal in Sources */,
-				8FD43AE02DF32F4400253CDA /* AAPLMathUtilities.cpp in Sources */,
 				3E56AB67297E0E6E00DB5F4F /* main.mm in Sources */,
-				8F09BF222F3B802A005F988C /* AudioInputLayer.mm in Sources */,
-				8FD43AE62DF8711800253CDA /* light.metal in Sources */,
-				8FD43AE42DF72FED00253CDA /* Camera.cpp in Sources */,
-				8F0EE81D2DE6A6CC00EBB26C /* triangle.metal in Sources */,
-				3E69B2312989F21B0012094B /* mtl_implementation.cpp in Sources */,
-				8F0EE81B2DE6448800EBB26C /* mtl_engine.mm in Sources */,
-				8F09BF062F3B56BF005F988C /* audio-input.mm in Sources */,
-				8F5A9AA12DE8B664002E8687 /* cube.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,21 +616,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FDA0DB62F3B94E500C82FA9 /* Texture.cpp in Sources */,
-				8FDA0DB72F3B94E500C82FA9 /* AAPLMathUtilities.cpp in Sources */,
-				8FDA0DB82F3B94E500C82FA9 /* light.metal in Sources */,
-				8FDA0DB92F3B94E500C82FA9 /* Camera.cpp in Sources */,
-				8FDA0DBA2F3B94E500C82FA9 /* shadowPass.metal in Sources */,
-				8FDA0DBC2F3B94E500C82FA9 /* triangle.metal in Sources */,
-				8FDA0DBE2F3B94E500C82FA9 /* mtl_implementation.cpp in Sources */,
-				8FDA0DBF2F3B94E500C82FA9 /* BlinnPhong.metal in Sources */,
-				8FDA0DC02F3B94E500C82FA9 /* cube.metal in Sources */,
-				8FDA0DC12F3B94E500C82FA9 /* mtl_engine.mm in Sources */,
-				8FDA0D9A2F3B8C0300C82FA9 /* AudioInputLayer.mm in Sources */,
+				8FDA0E3A2F3CB24800C82FA9 /* AudioInputLayer.mm in Sources */,
+				8FDA0E3B2F3CB24800C82FA9 /* mtl_implementation.cpp in Sources */,
+				8FDA0E3C2F3CB24800C82FA9 /* cube.metal in Sources */,
+				8FDA0E3D2F3CB24800C82FA9 /* BlinnPhong.metal in Sources */,
+				8FDA0E492F3DF72600C82FA9 /* AudioAnalyzer.mm in Sources */,
+				8FDA0E3F2F3CB24800C82FA9 /* AAPLMathUtilities.cpp in Sources */,
+				8FDA0E402F3CB24800C82FA9 /* Texture.cpp in Sources */,
+				8FDA0E412F3CB24800C82FA9 /* mtl_engine.mm in Sources */,
+				8FDA0E422F3CB24800C82FA9 /* light.metal in Sources */,
+				8FDA0E432F3CB24800C82FA9 /* triangle.metal in Sources */,
+				8FDA0E442F3CB24800C82FA9 /* shadowPass.metal in Sources */,
+				8FDA0E452F3CB24800C82FA9 /* Camera.cpp in Sources */,
 				8FDA0DA52F3B94DC00C82FA9 /* imgui_tables.cpp in Sources */,
 				8FDA0DA62F3B94DC00C82FA9 /* imgui_widgets.cpp in Sources */,
 				8FDA0DA72F3B94DC00C82FA9 /* imgui.cpp in Sources */,
 				8FDA0DA82F3B94DC00C82FA9 /* imgui_draw.cpp in Sources */,
+				8FDA0DF82F3CB15100C82FA9 /* AppDelegate.mm in Sources */,
+				8FDA0DF92F3CB15100C82FA9 /* main.m in Sources */,
+				8FDA0DFA2F3CB15100C82FA9 /* ViewController.m in Sources */,
 				8FDA0D9C2F3B94CB00C82FA9 /* stbi_image.cpp in Sources */,
 				8FDA0D9F2F3B94D200C82FA9 /* imgui_impl_glfw.cpp in Sources */,
 				8FDA0DA02F3B94D200C82FA9 /* imgui_impl_metal.mm in Sources */,
@@ -641,6 +642,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8FDA0DE62F3CB15100C82FA9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8FDA0DE52F3CB15100C82FA9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		3E56AB68297E0E6E00DB5F4F /* Debug */ = {
