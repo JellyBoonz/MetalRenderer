@@ -124,6 +124,8 @@ private:
     MTL::Buffer *planeTransformBuffer;
     MTL::Buffer *transformationBuffer;
     MTL::Buffer *shadowTransformBuffer;
+    
+    MTL::Buffer *audioDisplacementBuffer;
 
     // Audio Layer Objects
     AudioInputLayer _audioInputLayer;

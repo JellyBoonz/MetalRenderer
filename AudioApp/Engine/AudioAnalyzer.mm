@@ -11,6 +11,7 @@ AudioAnalyzer::AudioAnalyzer()
 : _fftSetup(vDSP_create_fftsetup(kFFTLog2, kFFTRadix2)) {
         
         _windowBuffer.resize(kFFTSize);
+        _windowedBuffer.resize(kFFTSize);
         _realpBuffer.resize(kFFTSize / 2);
         _imagpBuffer.resize(kFFTSize / 2);
         _spectrumMagnitudes.resize(kSpectrumSize, 0.0f);
@@ -30,7 +31,11 @@ void AudioAnalyzer::processBuffer(AVAudioPCMBuffer *buffer, AVAudioTime *when) {
     gRolling.push(currentFeatures.rms);
     
     computeSpectrum(buffer);
-    
+
+    auto [pitchHz, confidence] = computePitchMPM(_windowedBuffer.data(), kFFTSize, _sampleRate);
+    _detectedPitchHz = pitchHz;
+    _pitchConfidence = confidence;
+
     BandEnergies raw = computeRawBandEnergies();
     _smoothedBass = kBandSmoothAlpha * raw.bass + (1.0f - kBandSmoothAlpha) * _smoothedBass;
     _smoothedMid = kBandSmoothAlpha * raw.mid + (1.0f - kBandSmoothAlpha) * _smoothedMid;
@@ -65,7 +70,10 @@ void AudioAnalyzer::computeSpectrum(AVAudioPCMBuffer *buffer) {
     
     float* channelData = buffer.floatChannelData[0];
     if (!channelData) return;
-    
+
+    for (size_t i = 0; i < kFFTSize; ++i)
+        _windowedBuffer[i] = channelData[i] * _windowBuffer[i];
+
     DSPSplitComplex splitComplex;
     splitComplex.realp = _realpBuffer.data();
     splitComplex.imagp = _imagpBuffer.data();
@@ -116,4 +124,43 @@ BandEnergies AudioAnalyzer::computeRawBandEnergies() const {
         out.treble += _spectrumMagnitudes[i];
 
     return out;
+}
+
+std::pair<float, float> AudioAnalyzer::computePitchMPM(const float* samples, size_t n, float sampleRate) {
+    if (!samples || n < 2 || sampleRate <= 0.0f)
+        return {0.0f, 0.0f};
+
+    int minLag = (int)(sampleRate / 1500.0f);
+    int maxLag = (int)(sampleRate / 50.0f);
+    minLag = std::max(1, minLag);
+    maxLag = std::min(maxLag, (int)n - 1);
+    if (minLag >= maxLag)
+        return {0.0f, 0.0f};
+
+    float bestCorr = -1.0f;
+    int bestLag = minLag;
+
+    // Finding the best lag helps to find the period, which is the pitch.
+    // We compare the pairwise values at samples[i] and samples[i + lag] to find the best correlation.
+    // Values that are similar will have a high correlation, while values that are different will have a low correlation.
+    for (int lag = minLag; lag <= maxLag; lag++) {
+        float sumXY = 0.0f, sumX2 = 0.0f, sumY2 = 0.0f;
+        for (int i = 0; i < (int)n - lag; i++) {
+            float x = samples[i];
+            float y = samples[i + lag];
+            sumXY += x * y;
+            sumX2 += x * x;
+            sumY2 += y * y;
+        }
+        float denom = std::sqrt(sumX2 * sumY2); // normalizing the correlation so that we aren't biased by volume
+        float corr = (denom > 1e-10f) ? (sumXY / denom) : 0.0f;
+        if (corr > bestCorr) {
+            bestCorr = corr;
+            bestLag = lag;
+        }
+    }
+
+    float pitchHz = sampleRate / (float)bestLag;
+    float confidence = std::max(0.0f, std::min(1.0f, bestCorr));
+    return {pitchHz, confidence};
 }

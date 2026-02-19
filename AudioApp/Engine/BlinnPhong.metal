@@ -14,18 +14,23 @@ struct VertexOut {
 vertex VertexOut vertexBP(uint vertexID [[vertex_id]],
                           constant VertexData* vertexData[[buffer(0)]],
                           constant TransformationData* transformationData[[buffer(1)]],
-                          constant TransformationData* lightTransform[[buffer(2)]]){
+                          constant TransformationData* lightTransform[[buffer(2)]],
+                          constant float& displacement[[buffer(3)]]){
     VertexOut out;
     
-    out.position = transformationData->perspectiveMatrix * transformationData->viewMatrix * transformationData->modelMatrix * vertexData[vertexID].position;
+    float3x3 normalMat = float3x3(transformationData->modelMatrix[0].xyz, transformationData->modelMatrix[1].xyz, transformationData->modelMatrix[2].xyz);
+    
+    float4 scaledVertex = float4(vertexData[vertexID].position.xyz * (1.0 + displacement), 1.0);
+    
+    float4 modelPos = transformationData->modelMatrix * scaledVertex;
+    
+    out.position = transformationData->perspectiveMatrix * transformationData->viewMatrix * modelPos;
     
     out.textureCoordinate = vertexData[vertexID].textureCoordinate;
     
-    out.worldPos = (transformationData->modelMatrix * vertexData[vertexID].position).xyz;
+    out.worldPos = modelPos.xyz;
     
     out.lightSpacePos = lightTransform->perspectiveMatrix * lightTransform->viewMatrix * float4(out.worldPos, 1.0);
-    
-    float3x3 normalMat = float3x3(transformationData->modelMatrix[0].xyz, transformationData->modelMatrix[1].xyz, transformationData->modelMatrix[2].xyz);
     
     out.normal = normalize(normalMat * vertexData[vertexID].normal);
     

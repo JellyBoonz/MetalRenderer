@@ -3,6 +3,7 @@
 
 #include <Accelerate/Accelerate.h>
 #include <atomic>
+#include <utility>
 #include <vector>
 
 struct AudioFeatures {
@@ -69,7 +70,10 @@ public:
     const std::vector<float>& getSpectrumMagnitudes() const {return _spectrumMagnitudes; }
     float getSampleRate() const { return _sampleRate; }
     BandEnergies getBandEnergies() const;
-    
+
+    float getDetectedPitch() const { return _detectedPitchHz; }
+    float getPitchConfidence() const { return _pitchConfidence; }
+
 private:
     AudioFeatures currentFeatures;
     std::atomic<float> gCurrentRMS {0.0f};
@@ -78,6 +82,7 @@ private:
     float computeRMS(AVAudioPCMBuffer *buffer);
     void computeSpectrum(AVAudioPCMBuffer *buffer);
     BandEnergies computeRawBandEnergies() const;
+    std::pair<float, float> computePitchMPM(const float* samples, size_t n, float sampleRate);
         
     // FFT state
     FFTSetup _fftSetup;
@@ -85,8 +90,12 @@ private:
     std::vector<float> _realpBuffer;
     std::vector<float> _imagpBuffer;
     std::vector<float> _spectrumMagnitudes;
+    std::vector<float> _windowedBuffer;
     float _sampleRate = 0.0f;
-    
+
+    float _detectedPitchHz = 0.0f;
+    float _pitchConfidence = 0.0f;
+
     // Smoothed band energies (EMA, like RollingAverage for RMS)
     float _smoothedBass = 0.0f;
     float _smoothedMid = 0.0f;

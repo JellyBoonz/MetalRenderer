@@ -1,3 +1,4 @@
+#include <cmath>
 #include "mtl_engine.hpp"
 #include "../../external/imgui/imgui.h"
 #include "imgui_impl_glfw.h"
@@ -5,6 +6,23 @@
 
 // Audio function declarations
 bool initAudioCapture();
+
+static void hueToRGB(float hue, float& r, float& g, float& b) {
+    float h = hue * 6.0f;
+    int i = (int)h;
+    float f = h - i;
+    float q = 1.0f - f;
+    float t = f;
+    switch (i % 6) {
+        case 0: r = 1.0f; g = t;   b = 0.0f; break;
+        case 1: r = q;    g = 1.0f; b = 0.0f; break;
+        case 2: r = 0.0f; g = 1.0f; b = t;   break;
+        case 3: r = 0.0f; g = q;    b = 1.0f; break;
+        case 4: r = t;    g = 0.0f; b = 1.0f; break;
+        case 5: r = 1.0f; g = 0.0f; b = q;   break;
+        default: r = g = b = 1.0f / 3.0f; break;
+    }
+}
 void shutdownAudioCapture();
 
 // MARK: - Lifecycle
@@ -83,6 +101,7 @@ void MtlEngine::cleanup() {
     // Clean up Metal resources
     transformationBuffer->release();
     lightTransformationBuffer->release();
+    audioDisplacementBuffer->release();
     shadowTransformBuffer->release();
     msaaRenderTargetTexture->release();
     shadowMapTexture->release();
@@ -358,6 +377,7 @@ void MtlEngine::createSquare() {
 void MtlEngine::createBuffers() {
     transformationBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     lightTransformationBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
+    audioDisplacementBuffer = metalDevice->newBuffer(sizeof(float), MTL::ResourceStorageModeShared);
     shadowTransformBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     planeTransformBuffer = metalDevice->newBuffer(sizeof(TransformationData), MTL::ResourceStorageModeShared);
     lightingBuffer = metalDevice->newBuffer(sizeof(LightingData), MTL::ResourceStorageModeShared);
@@ -693,26 +713,52 @@ void MtlEngine::updateSharedTransformData() {
     lightingData.lightPos = lightPosition;
     
     BandEnergies bands = _audioAnalyzer.getBandEnergies();
-    // Compensate for spectral tilt (treble/mid boost) and balance (bass boost)
     constexpr float kBassBoost = 5.0f;
-    constexpr float kMidBoost = .8f;
+    constexpr float kMidBoost = 0.8f;
     constexpr float kTrebleBoost = 1.0f;
     float bass = std::sqrt(std::max(0.0f, bands.bass * kBassBoost));
     float mid = std::sqrt(std::max(0.0f, bands.mid * kMidBoost));
     float treble = std::sqrt(std::max(0.0f, bands.treble * kTrebleBoost));
     float total = bass + mid + treble;
+
+    float pitch = _audioAnalyzer.getDetectedPitch();
+    float confidence = _audioAnalyzer.getPitchConfidence();
+    constexpr float kMinPitch = 50.0f;
+    constexpr float kMaxPitch = 2000.0f;
+    constexpr float kRefFreq = 55.0f;
+    constexpr float kPitchConfidenceThreshold = 0.25f;
+    constexpr float kVolumeThreshold = 0.003;
+
+    float rollingAvg = _audioAnalyzer.getFeatures().rollingAvg;
     float r = 0.0f, g = 0.0f, b = 0.0f;
-    if (total > 1e-6f) {
-        r = treble / total;
-        g = mid / total;
-        b = bass / total;
-    } else {
+    
+    if(rollingAvg > kVolumeThreshold) {
+        if (confidence >= kPitchConfidenceThreshold && pitch >= kMinPitch && pitch <= kMaxPitch) {
+            float semitonesFromA1 = 12.0f * std::log2(pitch / kRefFreq);
+            float hue = std::fmod(semitonesFromA1 / 12.0f, 1.0f);
+            if (hue < 0.0f) hue += 1.0f;
+            hueToRGB(hue, r, g, b);
+        } else {
+            if (total > 1e-6f) {
+                r = treble / total;
+                g = mid / total;
+                b = bass / total;
+            } else {
+                r = g = b = 1.0f / 3.0f;
+            }
+        }
+    }
+    else {
         r = g = b = 1.0f / 3.0f;
     }
+
     constexpr float kBrightnessScale = 15.0f;
     constexpr float kBrightnessFloor = 0.08f;
     constexpr float kDecayFactor = 0.96f;  // per-frame decay; lower = faster trail-off
     float rawBrightness = total > 0.0f ? std::min(1.0f, total * kBrightnessScale) : 0.0f;
+    
+    // When audio is loud, brightness rises immediately with rawBrightness. When it
+    // goes quiet, it decays by a rate of 4% (96% of the previous value).
     _brightnessEnvelope = std::max(rawBrightness, _brightnessEnvelope * kDecayFactor);
     float brightness = std::max(kBrightnessFloor, _brightnessEnvelope);
     lightColor = {r * brightness, g * brightness, b * brightness};
@@ -722,6 +768,9 @@ void MtlEngine::updateSharedTransformData() {
     lightingData.ambientIntensity = 0.1f;
     lightingData.shininess = 32.0f;
     memcpy(lightingBuffer->contents(), &lightingData, sizeof(lightingData));
+    
+    rollingAvg *= 25.0;
+    memcpy(audioDisplacementBuffer->contents(), &rollingAvg, sizeof(rollingAvg));
 }
 
 // MARK: - Draw / Render
@@ -794,6 +843,7 @@ void MtlEngine::encodeMainCube(MTL::RenderCommandEncoder *renderCommandEncoder) 
     renderCommandEncoder->setVertexBuffer(cubeVertexBuffer, 0, 0);
     renderCommandEncoder->setVertexBuffer(transformationBuffer, 0, 1);
     renderCommandEncoder->setVertexBuffer(lightTransformationBuffer, 0, 2);
+    renderCommandEncoder->setVertexBuffer(audioDisplacementBuffer, 0, 3);
     // No need to set shadow texture/sampler for no-shadow pipeline
     renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
     renderCommandEncoder->setFragmentBytes(&cubeColor, sizeof(cubeColor), 0);
@@ -828,6 +878,9 @@ void MtlEngine::encodePlane(MTL::RenderCommandEncoder *renderCommandEncoder) {
     renderCommandEncoder->setFragmentTexture(shadowMapTexture, 0);
     renderCommandEncoder->setFragmentSamplerState(shadowSampler, 0);
     renderCommandEncoder->setFragmentBuffer(lightingBuffer, 0, 3);
+    
+    float zeroDisplacement = 0.0f;
+    renderCommandEncoder->setVertexBytes(&zeroDisplacement, sizeof(zeroDisplacement), 3);
 
     simd::float3 color = {0.5f, 0.7f, 0.5f};
     renderCommandEncoder->setFragmentBytes(&color, sizeof(color), 0);
@@ -880,8 +933,10 @@ void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
         constexpr float kMidBoost = .8f;
         constexpr float kTrebleBoost = 3.0f;
         ImGui::Text("Band Energies: Bass %.2f, Mid %.2f, Treble %.2f", bands.bass * kBassBoost, bands.mid * kMidBoost, bands.treble * kTrebleBoost);
+        ImGui::Text("Pitch: %.1f Hz | Confidence: %.2f",
+            _audioAnalyzer.getDetectedPitch(), _audioAnalyzer.getPitchConfidence());
     }
-    
+
     ImGui::End();
     
     // Render ImGui
