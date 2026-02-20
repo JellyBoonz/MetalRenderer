@@ -47,6 +47,7 @@
 		8FDA0E452F3CB24800C82FA9 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E2E2F3CB24800C82FA9 /* Camera.cpp */; };
 		8FDA0E492F3DF72600C82FA9 /* AudioAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E482F3DF72600C82FA9 /* AudioAnalyzer.mm */; };
 		8FDA0E4B2F3F8C4200C82FA9 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FDA0E4A2F3F8C4200C82FA9 /* Accelerate.framework */; };
+		8FDA0E502F4776F900C82FA9 /* MusicalInterpreter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8FDA0E4F2F4776E900C82FA9 /* MusicalInterpreter.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -183,6 +184,9 @@
 		8FDA0E472F3DF70C00C82FA9 /* AudioAnalyzer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioAnalyzer.hpp; sourceTree = "<group>"; };
 		8FDA0E482F3DF72600C82FA9 /* AudioAnalyzer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioAnalyzer.mm; sourceTree = "<group>"; };
 		8FDA0E4A2F3F8C4200C82FA9 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		8FDA0E4D2F4776CC00C82FA9 /* MusicalContext.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MusicalContext.hpp; sourceTree = "<group>"; };
+		8FDA0E4E2F4776DB00C82FA9 /* MusicalInterpreter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MusicalInterpreter.hpp; sourceTree = "<group>"; };
+		8FDA0E4F2F4776E900C82FA9 /* MusicalInterpreter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MusicalInterpreter.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -417,6 +421,9 @@
 				8FDA0E372F3CB24800C82FA9 /* triangle.metal */,
 				8FDA0E382F3CB24800C82FA9 /* VertexData.hpp */,
 				3E56AB66297E0E6E00DB5F4F /* main.mm */,
+				8FDA0E4D2F4776CC00C82FA9 /* MusicalContext.hpp */,
+				8FDA0E4E2F4776DB00C82FA9 /* MusicalInterpreter.hpp */,
+				8FDA0E4F2F4776E900C82FA9 /* MusicalInterpreter.mm */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -633,6 +640,7 @@
 				8FDA0DA72F3B94DC00C82FA9 /* imgui.cpp in Sources */,
 				8FDA0DA82F3B94DC00C82FA9 /* imgui_draw.cpp in Sources */,
 				8FDA0DF82F3CB15100C82FA9 /* AppDelegate.mm in Sources */,
+				8FDA0E502F4776F900C82FA9 /* MusicalInterpreter.mm in Sources */,
 				8FDA0DF92F3CB15100C82FA9 /* main.m in Sources */,
 				8FDA0DFA2F3CB15100C82FA9 /* ViewController.m in Sources */,
 				8FDA0D9C2F3B94CB00C82FA9 /* stbi_image.cpp in Sources */,

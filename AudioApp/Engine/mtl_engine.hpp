@@ -17,6 +17,8 @@
 #include "AAPLMathUtilities.h"
 #include "AudioInputLayer.hpp"
 #include "AudioAnalyzer.hpp"
+#include "MusicalContext.hpp"
+#include "MusicalInterpreter.hpp"
 #include "Camera.hpp"
 #include "Texture.hpp"
 #include "VertexData.hpp"
@@ -130,6 +132,7 @@ private:
     // Audio Layer Objects
     AudioInputLayer _audioInputLayer;
     AudioAnalyzer _audioAnalyzer;
+    MusicalInterpreter _musicalInterpreter;
     
     MTL::DepthStencilState *depthStencilState;
     MTL::RenderPassDescriptor *renderPassDescriptor;

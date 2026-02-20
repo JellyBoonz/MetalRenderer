@@ -152,7 +152,7 @@ std::pair<float, float> AudioAnalyzer::computePitchMPM(const float* samples, siz
             sumX2 += x * x;
             sumY2 += y * y;
         }
-        float denom = std::sqrt(sumX2 * sumY2); // normalizing the correlation so that we aren't biased by volume
+        float denom = std::sqrt(sumX2 * sumY2); // normalizing the correlation so that we aren't biased by amplitude
         float corr = (denom > 1e-10f) ? (sumXY / denom) : 0.0f;
         if (corr > bestCorr) {
             bestCorr = corr;

@@ -712,50 +712,39 @@ void MtlEngine::updateSharedTransformData() {
     lightingData.cameraPos = camera->getPosition();
     lightingData.lightPos = lightPosition;
     
-    BandEnergies bands = _audioAnalyzer.getBandEnergies();
-    constexpr float kBassBoost = 5.0f;
-    constexpr float kMidBoost = 0.8f;
-    constexpr float kTrebleBoost = 1.0f;
-    float bass = std::sqrt(std::max(0.0f, bands.bass * kBassBoost));
-    float mid = std::sqrt(std::max(0.0f, bands.mid * kMidBoost));
-    float treble = std::sqrt(std::max(0.0f, bands.treble * kTrebleBoost));
-    float total = bass + mid + treble;
+    MusicalContext ctx = _musicalInterpreter.interpret(_audioAnalyzer);
 
-    float pitch = _audioAnalyzer.getDetectedPitch();
-    float confidence = _audioAnalyzer.getPitchConfidence();
-    constexpr float kMinPitch = 50.0f;
-    constexpr float kMaxPitch = 2000.0f;
     constexpr float kRefFreq = 55.0f;
     constexpr float kPitchConfidenceThreshold = 0.25f;
     constexpr float kVolumeThreshold = 0.003;
+    constexpr float kMinPitch = 50.0f;
+    constexpr float kMaxPitch = 2000.0f;
 
     float rollingAvg = _audioAnalyzer.getFeatures().rollingAvg;
+    float rms = _audioAnalyzer.getFeatures().rms;
     float r = 0.0f, g = 0.0f, b = 0.0f;
-    
-    if(rollingAvg > kVolumeThreshold) {
-        if (confidence >= kPitchConfidenceThreshold && pitch >= kMinPitch && pitch <= kMaxPitch) {
-            float semitonesFromA1 = 12.0f * std::log2(pitch / kRefFreq);
-            float hue = std::fmod(semitonesFromA1 / 12.0f, 1.0f);
+
+    if (rms > kVolumeThreshold) {
+        if (ctx.pitchConfidence >= kPitchConfidenceThreshold &&
+            ctx.dominantPitch >= kMinPitch && ctx.dominantPitch <= kMaxPitch) {
+            float semitonesFromA1 = 12.0f * std::log2(ctx.dominantPitch / kRefFreq);
+            float hue = semitonesFromA1 / 12.0f;
+            hue += 0.08f * (1.0f - ctx.melancholy);
+            hue = std::fmod(hue, 1.0f);
             if (hue < 0.0f) hue += 1.0f;
             hueToRGB(hue, r, g, b);
         } else {
-            if (total > 1e-6f) {
-                r = treble / total;
-                g = mid / total;
-                b = bass / total;
-            } else {
-                r = g = b = 1.0f / 3.0f;
-            }
+            float hue = 0.55f + 0.15f * (1.0f - ctx.melancholy);
+            if (hue > 1.0f) hue -= 1.0f;
+            hueToRGB(hue, r, g, b);
         }
-    }
-    else {
+    } else {
         r = g = b = 1.0f / 3.0f;
     }
 
-    constexpr float kBrightnessScale = 15.0f;
     constexpr float kBrightnessFloor = 0.08f;
-    constexpr float kDecayFactor = 0.96f;  // per-frame decay; lower = faster trail-off
-    float rawBrightness = total > 0.0f ? std::min(1.0f, total * kBrightnessScale) : 0.0f;
+    constexpr float kDecayFactor = 0.96f;
+    float rawBrightness = std::min(1.0f, (ctx.energy * 0.7f + ctx.brightness * 0.3f) * 3.0f);
     
     // When audio is loud, brightness rises immediately with rawBrightness. When it
     // goes quiet, it decays by a rate of 4% (96% of the previous value).
@@ -935,6 +924,10 @@ void MtlEngine::drawImGui(MTL::RenderCommandEncoder *renderCommandEncoder) {
         ImGui::Text("Band Energies: Bass %.2f, Mid %.2f, Treble %.2f", bands.bass * kBassBoost, bands.mid * kMidBoost, bands.treble * kTrebleBoost);
         ImGui::Text("Pitch: %.1f Hz | Confidence: %.2f",
             _audioAnalyzer.getDetectedPitch(), _audioAnalyzer.getPitchConfidence());
+
+        MusicalContext ctx = _musicalInterpreter.interpret(_audioAnalyzer);
+        ImGui::Text("MusicalContext: energy=%.2f brightness=%.2f melancholy=%.2f",
+            ctx.energy, ctx.brightness, ctx.melancholy);
     }
 
     ImGui::End();
